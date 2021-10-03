@@ -1,13 +1,9 @@
-//
-//
-//
-import ShimmieStack from 'shimmiestack';
 
 import SongCommand from './processors/song_command';
 import SongQuery from './processors/song_query';
 
 // Set up the song stack
-const songStack = ShimmieStack({
+const songStack = new ShimmieStack({
     EventbaseURL: process.env.DATABASE_URL,
     ServerPort: parseInt(process.env.SONG_PORT),
 });

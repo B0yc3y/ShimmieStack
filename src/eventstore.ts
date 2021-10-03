@@ -3,7 +3,7 @@
 //
 
 import { EventEmitter } from 'events'
-import Event, { Meta } from './event'
+import Event, { IMeta } from './models/event'
 import { IEventBase } from './eventbase'
 
 class EventStoreEmitter extends EventEmitter {}
@@ -14,7 +14,7 @@ export interface IEventStore {
         streamId: string,
         eventName: string,
         data: object,
-        meta: Meta
+        meta: IMeta
     ) => Promise<any>
     subscribe: (type: string, callback: (eventModel: any) => void) => void
     getAllEvents: () => Promise<any>
@@ -27,7 +27,7 @@ export default function EventStore(eventbase: IEventBase): IEventStore {
         streamId: string,
         eventName: string,
         data: object,
-        meta: Meta
+        meta: IMeta
     ) => {
         if (!streamId || !eventName || !meta) {
             console.error(

@@ -3,7 +3,7 @@
 //
 import pg from 'pg';
 const { Client } = pg;
-import Event from './event';
+import Event from './models/event';
 
 export interface IEventBase {
     getAllEventsInOrder: () => Promise<any>;
@@ -16,7 +16,7 @@ export interface IEventBase {
     dropTables: () => Promise<any[]>;
 }
 
-export default function Eventbase(ConnectionString: string): IEventBase {
+export default function eventBase(ConnectionString: string): IEventBase {
     if (!ConnectionString) {
         throw new Error('Missing DATABASE_URL environment variable.');
     } else {
