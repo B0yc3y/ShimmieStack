@@ -1,6 +1,7 @@
-import express, { Express } from 'express';
+import express, { Express, Router, Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
 import { Server } from 'http';
+import ShimmieStack from './models/shimmieStack';
 
 const STACK_VERSION = '0.4';
 
@@ -19,3 +20,5 @@ export const startApiListener = (app: Express, port: number): Server => {
         )
     );
 };
+
+export { ShimmieStack, Request, Response, Router }
