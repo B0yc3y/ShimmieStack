@@ -16,12 +16,3 @@ export interface IMeta {
     username: string;
     userId: string; // can be device id?
 };
-
-export default class Event implements IEvent {
-    constructor(
-        public streamId: string,
-        public type: string,
-        public data: EventData,
-        public meta: IMeta
-    ) {}
-}

@@ -3,14 +3,14 @@
 //
 import pg from 'pg';
 const { Client } = pg;
-import Event from './models/event';
+import { IEvent } from './models/event';
 
 export interface IEventBase {
     getAllEventsInOrder: () => Promise<any>;
     runQuery: (query: string, values: string[] | undefined) => Promise<any>;
     connect: () => Promise<void>;
     close: () => Promise<void>;
-    addEvent: (event: Event) => Promise<any[]>;
+    addEvent: (event: IEvent) => Promise<any[]>;
     showTables: () => Promise<any[]>;
     createTables: () => Promise<any[]>;
     dropTables: () => Promise<any[]>;
@@ -37,7 +37,7 @@ export default function eventBase(ConnectionString: string): IEventBase {
         await connection.end();
     };
 
-    const addEvent = (event: Event) => {
+    const addEvent = (event: IEvent) => {
         const query =
             'INSERT into eventlist(StreamId, Data, Type, Meta) VALUES($1, $2, $3, $4) RETURNING SequenceNum, streamId, logdate, type';
         const values: string[] = [

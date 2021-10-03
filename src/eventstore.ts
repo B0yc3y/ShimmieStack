@@ -3,7 +3,7 @@
 //
 
 import { EventEmitter } from 'events'
-import Event, { IMeta } from './models/event'
+import { IEvent, IMeta } from './models/event'
 import { IEventBase } from './eventbase'
 
 class EventStoreEmitter extends EventEmitter {}
@@ -25,23 +25,30 @@ export default function EventStore(eventbase: IEventBase): IEventStore {
 
     const recordEvent = async (
         streamId: string,
-        eventName: string,
+        type: string,
         data: object,
         meta: IMeta
     ) => {
-        if (!streamId || !eventName || !meta) {
+        if (!streamId || !type || !meta) {
             console.error(
                 'EventStore::recorEvent::missing values',
                 streamId,
-                eventName,
+                type,
                 meta
             )
             throw new Error('Attempt to record bad event data')
         }
-        const event = new Event(streamId, eventName, data, meta)
+
+        const event: IEvent = {
+            streamId,
+            type,
+            data,
+            meta
+        }
+
         const rows = await eventbase.addEvent(event) // need to await here to confirm before emitting
 
-        eventStoreEmitter.emit(eventName, event)
+        eventStoreEmitter.emit(type, event)
         return rows[0]
     }
 
@@ -58,11 +65,16 @@ export default function EventStore(eventbase: IEventBase): IEventStore {
 
     // On startup only re-emit all of the events in the database
     const replayAllEvents = async (): Promise<number> => {
-        const allEvents = await eventbase.getAllEventsInOrder()
+        const allEvents:any[] = await eventbase.getAllEventsInOrder()
 
         for (let e of allEvents) {
             // WARNING: These are field names from the database and hence are all LOWERCASE
-            const event = new Event(e.streamid, e.type, e.data, e.meta)
+            const event: IEvent = {
+                streamId: e.streamid,
+                type: e.type,
+                data: e.data,
+                meta: e.meta
+            }
             eventStoreEmitter.emit(event.type, event)
         }
 
